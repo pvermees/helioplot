@@ -1,0 +1,40 @@
+<!-- 
+    Document   : MSWD
+    Created on : 04-Apr-2009, 11:22:21
+    Author     : pvermees
+-->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>MSWD</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+  <body>
+  <h2>MSWD</h2>
+
+  The Mean Square Weighted Deviation (MSWD) is a measure of goodness of fit
+  that takes into account the relative importance of both the interal and 
+  external reproducibility. HelioPlot provides three estimates of the
+  'average' age (arithmetic mean, geometric mean and central age), and
+  calculates the corresponding MSWD for each of them.
+  
+  <p>  MSWD = 1 if the age data fit a univariate normal distribution
+  in t (for the arithmetic mean age) or log(t) (for the geometric mean age) 
+  space, or if the compositional data fit a bivariate normal distribution in
+  [log(U/He),log(Th/He)]-space (for the central age).
+  
+  <p>  MSWD &#60; 1 if the observed scatter is less than that predicted by the analytical
+  uncertainties. In this case, the data are said to be "underdispersed", indicating
+  that the analytical uncertainties were overestimated.
+  
+  <p>  MSWD &#62; 1 if the observed scatter exceeds that predicted by the analytical uncertainties.
+  In this case, the data are said to be "overdispersed". This situation is the rule
+  rather than the exception in (U-Th)/He geochronology, indicating an incomplete
+  understanding of the isotope system. Several reasons have been proposed to explain the
+  overdispersion of (U-Th)/He data, including unevenly distributed U-Th distributions
+  and radiation damage.
+  
+  <p>See <a href="Scale.html">Scale</a>
+  
+  </body>
+</html>

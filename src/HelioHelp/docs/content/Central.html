@@ -1,0 +1,29 @@
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Central Age</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+  <body>
+  <h2>Central Age</h2>
+
+  The central age is calculated from the geometric mean U-Th-(Sm)-He composition.
+  To calculate this composition, HelioPlot employs a non-linear optimisation
+  algorithm (using Newton's method) that simultaneously takes into account the
+  internal and external reproducibilities of the data. Convergence of this algorithm
+  is communicated to the user via the console. If the algorithm fails to converge,
+  HelioPlot uses one of two alternative methods. If the compositional MSWD &#60; 3,
+  the program uses a 'conventional weighted mean algorithm taking into account
+  only the assigned analytical errors. If the compositional MSWD &#62; 3,
+  the analytical errors are ignored and the error propagation uses only the
+  empirical overdispersion. Again, the specific algorithm will be reported to
+  the console.
+
+  <p>See <a href="MSWD.html">MSWD</a>
+
+  </body>
+</html>
