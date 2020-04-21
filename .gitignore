@@ -1,0 +1,13 @@
+# Java
+hs_err_pid*.log
+# Maven
+/out/
+/target/
+/dependency-reduced-pom.xml
+# IntelliJ
+/.idea/
+# VS Code
+/.classpath
+/.project
+/.vscode/
+/.settings
