@@ -6,7 +6,7 @@
 
   <groupId>uk.ac.ucl</groupId>
   <artifactId>helioplot</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>2.1</version>
   <dependencies>
     <dependency>
       <groupId>javax.help</groupId>
@@ -50,8 +50,9 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>1.6</maven.compiler.source>
-    <maven.compiler.target>1.6</maven.compiler.target>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
+    <app.main.class>HelioPlot.Main</app.main.class>
   </properties>
 
   <build>
@@ -76,7 +77,7 @@
             <archive>
               <manifest>
                 <addClasspath>true</addClasspath>
-                <mainClass>HelioPlot.Main</mainClass>
+                <mainClass>${app.main.class}</mainClass>
               </manifest>
             </archive>
           </configuration>
@@ -94,6 +95,33 @@
             <goals>
               <goal>shade</goal>
             </goals>
+            <configuration>
+              <!-- the uberjar should not be copied on top of the normal jar
+                because this breaks any subsequent builds, so we give it a
+                different name (attaching -all to the name) -->
+              <shadedArtifactAttached>true</shadedArtifactAttached>
+              <shadedClassifierName>all</shadedClassifierName>
+              <!-- leave all test implementations out of the uberjar -->
+              <artifactSet>
+                <excludes>
+                  <exclude>junit:junit</exclude>
+                  <exclude>org.hamcrest:hamcrest-core</exclude>
+                </excludes>
+              </artifactSet>
+              <transformers>
+                <!-- both freehep graphicsio and graphicsio-pdf define export file types in matching files,
+                  so we need to concatenate these together -->
+                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                  <resource>META-INF/services/org.freehep.graphicsbase.util.export.ExportFileType</resource>
+                </transformer>
+                <!-- all the manifests need to be combined -->
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                  <manifestEntries>
+                    <Main-Class>${app.main.class}</Main-Class>
+                  </manifestEntries>
+                </transformer>
+              </transformers>
+            </configuration>
           </execution>
         </executions>
       </plugin>

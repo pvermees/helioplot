@@ -15,13 +15,12 @@ abstract public class DataPlotter extends ColouredObject {
     }
 
     protected void plotData() throws Exception {
-        Sample sample;
         Data data = plot.getData();
         int ii = 0;
         boolean doSm = data.plotSm();
-        for (Iterator i = data.iterator(); i.hasNext(); ) {
+        for (Iterator<Sample> i = data.iterator(); i.hasNext(); ) {
             ii++;
-            sample = (Sample)i.next();
+            Sample sample = i.next();
             if (doSm){
                 plotEllipse(new Ellipse(25,numsigma,sample),sample.Sm());
             } else {
@@ -41,8 +40,8 @@ abstract public class DataPlotter extends ColouredObject {
         double[] ae;
         int numages = data.numAges();
         if (numages==1){
-            Iterator i = data.iterator();
-            Sample sample = (Sample)i.next();
+            Iterator<Sample> i = data.iterator();
+            Sample sample = i.next();
             ae = Calculate.ageErr(sample);
         } else {
             ae = data.averageAgeErr(true);

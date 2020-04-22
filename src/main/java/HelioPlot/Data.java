@@ -12,14 +12,18 @@ import java.util.Iterator;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
 
-public class Data implements Iterator, Iterable {
+public class Data implements Iterator<Sample>, Iterable<Sample> {
 
     public Data(){
         samplename = "";
-        composition = new ArrayList[n];
+        // Java disallows new ArrayList<Double>[n] for some reason,
+        // but at least we can keep the warning suppression to one line:
+        @SuppressWarnings("unchecked")
+        ArrayList<Double>[] comp = new ArrayList[n];
+        this.composition = comp;
         // initialise the data columns
         for (int i=0; i<n; i++){
-            composition[i] = new ArrayList<Double>();
+            this.composition[i] = new ArrayList<Double>();
         }
     }
 
@@ -27,9 +31,8 @@ public class Data implements Iterator, Iterable {
      * returns true if all Sm values are >0 and !=0
      */
     public boolean hasSm() throws Exception {
-        Sample sample;
-        for (Iterator i = this.iterator(); i.hasNext(); ) {
-            sample = (Sample)i.next();
+        for (Iterator<Sample> i = this.iterator(); i.hasNext(); ) {
+            Sample sample = i.next();
             if (sample.Sm()<=0.0){
                 return false;
             }
@@ -45,11 +48,11 @@ public class Data implements Iterator, Iterable {
      * returns true if there is any variation in Colour values
      */
     public boolean hasColour() throws Exception {
-        Iterator i = this.iterator();
-        Sample sample = (Sample)i.next();
+        Iterator<Sample> i = this.iterator();
+        Sample sample = i.next();
         double C1 = sample.C();
         for (; i.hasNext();) {
-            sample = (Sample)i.next();
+            sample = i.next();
             if (sample.C()!=C1){
                 return true;
             }
@@ -58,23 +61,21 @@ public class Data implements Iterator, Iterable {
     }    
     
     public void load(String filename) {
-        String aLine;
         try {
             if (!filename.equals("")){
                 System.out.println("Loading: " + filename);
                 FileInputStream fin = new FileInputStream(filename);
                 BufferedReader br = new BufferedReader(new InputStreamReader(fin));
-                aLine = br.readLine();
+                String aLine = br.readLine();
                 StringTokenizer stokenizer = new StringTokenizer(aLine, ",");
                 samplename = stokenizer.nextToken();
                 for (int i=0; i<n; i++){
                     composition[i].clear();
                 }
-                int numtokens;
                 // extract columns of composition
                 for (int i=0; (aLine = br.readLine()) != null ; i++) {
                     StringTokenizer st = new StringTokenizer(aLine, ",");
-                    numtokens = (st.countTokens()<n) ? st.countTokens() : n;
+                    int numtokens = (st.countTokens() < n) ? st.countTokens() : n;
                     for (int j=0; j<numtokens; j++){
                         try {
                             composition[j].add(Double.parseDouble(st.nextToken()));
@@ -114,12 +115,11 @@ public class Data implements Iterator, Iterable {
      * calculate the covariance matrix of the average logratio composition
      */
     public Matrix averageCovVWX() throws Exception{
-        Sample sample;
         boolean doSm = this.hasSm();
         int m = doSm ? 3 : 2;
         Matrix sum = new Matrix(m,m), omega;
-        for (Iterator i = this.iterator(); i.hasNext(); ) {
-            sample = (Sample)i.next();
+        for (Iterator<Sample> i = this.iterator(); i.hasNext(); ) {
+            Sample sample = i.next();
             omega = sample.cov(doSm).inverse();
             sum = sum.plusEquals(omega);
         }
@@ -131,10 +131,9 @@ public class Data implements Iterator, Iterable {
         int N = 0;
         Matrix vw = new Matrix(2,1), vwBar = this.mle2(),
                omega, S = new Matrix(1,1);
-        Sample sample;
-        for (Iterator i = this.iterator(); i.hasNext(); ) {
+        for (Iterator<Sample> i = this.iterator(); i.hasNext(); ) {
             N++;
-            sample = (Sample)i.next();
+            Sample sample = i.next();
             vw.set(0, 0, sample.V());
             vw.set(1, 0, sample.W());
             omega = sample.cov(false).inverse();
@@ -197,9 +196,8 @@ public class Data implements Iterator, Iterable {
 
     public ArrayList<double[]> getAgeErrs() throws Exception {
         ArrayList<double[]> tst = new ArrayList<double[]>();
-        Sample sample;
-        for (Iterator i = iterator(); i.hasNext(); ){
-            sample = (Sample)i.next();
+        for (Iterator<Sample> i = iterator(); i.hasNext(); ){
+            Sample sample = i.next();
             tst.add(Calculate.ageErr(sample));
         }
         return tst;
@@ -207,9 +205,8 @@ public class Data implements Iterator, Iterable {
 
     public ArrayList<double[]> getLogAgeErrs() throws Exception {
         ArrayList<double[]> tst = new ArrayList<double[]>();
-        Sample sample;
-        for (Iterator i = iterator(); i.hasNext(); ){
-            sample = (Sample)i.next();
+        for (Iterator<Sample> i = iterator(); i.hasNext(); ){
+            Sample sample = i.next();
             tst.add(Calculate.logAgeErr(sample));
         }
         return tst;
@@ -224,7 +221,7 @@ public class Data implements Iterator, Iterable {
     // returns the number of ages
     public int numAges(){
         int num = 0;
-        for (Iterator i = this.iterator(); i.hasNext(); i.next()) {
+        for (Iterator<Sample> i = this.iterator(); i.hasNext(); i.next()) {
             num++;
         }
         return num;
@@ -244,7 +241,7 @@ public class Data implements Iterator, Iterable {
         int m = 3, nV, nW, nX;
         double f, t, V, W, X, sV, sW, sX, dV, dW, dX,
                minV, maxV, minW, maxW, minX = NAN-1, maxX = NAN;
-        TreeMap<Double,Double> pdf = new TreeMap(), cdf;
+        TreeMap<Double,Double> pdf = new TreeMap<Double,Double>(), cdf;
         double[] UThSmHe, out = new double[2];
         // end of variable declarations
         sV = Math.sqrt(cov.get(0, 0));
@@ -381,9 +378,8 @@ public class Data implements Iterator, Iterable {
 
     public ArrayList<Double> getSm() throws Exception {
         ArrayList<Double> Sm = new ArrayList<Double>();
-        Sample sample;
-        for (Iterator i = this.iterator(); i.hasNext(); ) {
-            sample = (Sample)i.next();
+        for (Iterator<Sample> i = this.iterator(); i.hasNext(); ) {
+            Sample sample = i.next();
             Sm.add(sample.Sm());
         }
         return Sm;
@@ -391,9 +387,8 @@ public class Data implements Iterator, Iterable {
 
     public ArrayList<Double> getC() throws Exception {
         ArrayList<Double> C = new ArrayList<Double>();
-        Sample sample;
-        for (Iterator i = this.iterator(); i.hasNext(); ) {
-            sample = (Sample)i.next();
+        for (Iterator<Sample> i = this.iterator(); i.hasNext(); ) {
+            Sample sample = i.next();
             C.add(sample.C());
         }
         return C;
@@ -403,9 +398,8 @@ public class Data implements Iterator, Iterable {
 
     public ArrayList<Double> getV() throws Exception {
         ArrayList<Double> V = new ArrayList<Double>();
-        Sample sample;
-        for (Iterator i = this.iterator(); i.hasNext(); ) {
-            sample = (Sample)i.next();
+        for (Iterator<Sample> i = this.iterator(); i.hasNext(); ) {
+            Sample sample = i.next();
             V.add(sample.V());
         }
         return V;
@@ -413,9 +407,8 @@ public class Data implements Iterator, Iterable {
 
     public ArrayList<Double> getVarV() throws Exception {
         ArrayList<Double> vV = new ArrayList<Double>();
-        Sample sample;
-        for (Iterator i = this.iterator(); i.hasNext(); ) {
-            sample = (Sample)i.next();
+        for (Iterator<Sample> i = this.iterator(); i.hasNext(); ) {
+            Sample sample = i.next();
             vV.add(sample.vV());
         }
         return vV;
@@ -423,9 +416,8 @@ public class Data implements Iterator, Iterable {
 
     public ArrayList<Double> getW() throws Exception {
         ArrayList<Double> W = new ArrayList<Double>();
-        Sample sample;
-        for (Iterator i = this.iterator(); i.hasNext(); ) {
-            sample = (Sample)i.next();
+        for (Iterator<Sample> i = this.iterator(); i.hasNext(); ) {
+            Sample sample = i.next();
             W.add(sample.W());
         }
         return W;
@@ -433,9 +425,8 @@ public class Data implements Iterator, Iterable {
 
     public ArrayList<Double> getVarW() throws Exception {
         ArrayList<Double> vW = new ArrayList<Double>();
-        Sample sample;
-        for (Iterator i = this.iterator(); i.hasNext(); ) {
-            sample = (Sample)i.next();
+        for (Iterator<Sample> i = this.iterator(); i.hasNext(); ) {
+            Sample sample = i.next();
             vW.add(sample.vV());
         }
         return vW;
@@ -443,9 +434,8 @@ public class Data implements Iterator, Iterable {
 
     public ArrayList<Double> getX() throws Exception {
         ArrayList<Double> X = new ArrayList<Double>();
-        Sample sample;
-        for (Iterator i = this.iterator(); i.hasNext(); ) {
-            sample = (Sample)i.next();
+        for (Iterator<Sample> i = this.iterator(); i.hasNext(); ) {
+            Sample sample = i.next();
             X.add(sample.X());
         }
         return X;
@@ -453,9 +443,8 @@ public class Data implements Iterator, Iterable {
 
     public ArrayList<Double> getVarX() throws Exception {
         ArrayList<Double> vX = new ArrayList<Double>();
-        Sample sample;
-        for (Iterator i = this.iterator(); i.hasNext(); ) {
-            sample = (Sample)i.next();
+        for (Iterator<Sample> i = this.iterator(); i.hasNext(); ) {
+            Sample sample = i.next();
             vX.add(sample.vX());
         }
         return vX;
@@ -463,9 +452,8 @@ public class Data implements Iterator, Iterable {
 
     public ArrayList<Double> getCovVW() throws Exception {
         ArrayList<Double> covVW = new ArrayList<Double>();
-        Sample sample;
-        for (Iterator i = this.iterator(); i.hasNext(); ) {
-            sample = (Sample)i.next();
+        for (Iterator<Sample> i = this.iterator(); i.hasNext(); ) {
+            Sample sample = i.next();
             covVW.add(sample.covVW());
         }
         return covVW;
@@ -485,7 +473,7 @@ public class Data implements Iterator, Iterable {
     }
 
     @Override
-    public Object next() {
+    public Sample next() {
         Sample sample = new Sample(this.getRow(ii));
         // put iterator in right position for next request
         do {
@@ -496,7 +484,7 @@ public class Data implements Iterator, Iterable {
 
     int getRowNumber(int samplenumber) throws Exception {
         int sn = 0;
-        for (Iterator i = iterator(); i.hasNext(); i.next()) {
+        for (Iterator<Sample> i = iterator(); i.hasNext(); i.next()) {
             if (sn >= samplenumber){
                 break;
             } else {
@@ -512,7 +500,7 @@ public class Data implements Iterator, Iterable {
     }
 
     @Override
-    public Iterator iterator() {
+    public Iterator<Sample> iterator() {
         ii = 0;
         // if the data are empty, return immediately
         if (this.size()==0){return this;}

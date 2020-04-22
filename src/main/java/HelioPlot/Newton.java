@@ -176,9 +176,8 @@ static Matrix getCov(Matrix Xi, Data data) throws Exception {
     boolean doSm = data.hasSm();
     int m = doSm ? 3 : 2;
     Matrix EplusXi, cov, foo = new Matrix(m,m);
-    Sample sample;
-    for (Iterator i = data.iterator(); i.hasNext(); ) {
-        sample = (Sample)i.next();
+    for (Iterator<Sample> i = data.iterator(); i.hasNext(); ) {
+        Sample sample = i.next();
         cov = sample.cov(doSm);
         EplusXi = cov.plus(Xi);
         foo.plusEquals(EplusXi.inverse());
