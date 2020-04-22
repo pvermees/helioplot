@@ -6,6 +6,7 @@ hs_err_pid*.log
 /dependency-reduced-pom.xml
 # IntelliJ
 /.idea/
+/helioplot*.iml
 # VS Code
 /.classpath
 /.project

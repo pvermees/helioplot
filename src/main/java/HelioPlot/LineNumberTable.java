@@ -32,14 +32,13 @@ public class LineNumberTable extends JTable {
  
     @Override
     public Object getValueAt(int row, int column){
-            return new Integer(row + 1);
+            return row + 1;
     }
- 
+
     @Override
     public int getRowHeight(int row){
             return mainTable.getRowHeight();
     }
 
-    protected JTable mainTable;    
-    
+    protected JTable mainTable;
 }

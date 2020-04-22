@@ -76,7 +76,7 @@ public class LogRatioPlot extends DataPlotter {
                         plot.wmap(xy[0]), plot.hmap(xy[1])+plot.tlength);
             g2.drawString(f.format(vw[0]), plot.wmap(xy[0]), 
                           plot.hmap(xy[1])+ 
-                          (int)(g2.getFontMetrics().getHeight()));         
+                          (g2.getFontMetrics().getHeight()));
             i++;
         }
         i=0;
@@ -90,7 +90,7 @@ public class LogRatioPlot extends DataPlotter {
                         plot.wmap(xy[0]) - plot.tlength, plot.hmap(xy[1]));
             g2.drawString(f.format(vw[1]), 
                         plot.wmap(xy[0]) - plot.tlength -
-                        (int)(g2.getFontMetrics().stringWidth(f.format(vw[1]))), 
+                        (g2.getFontMetrics().stringWidth(f.format(vw[1]))),
                         plot.hmap(xy[1]));             
             i++;
         }
@@ -223,14 +223,13 @@ public class LogRatioPlot extends DataPlotter {
     @Override
     public void autoScale() throws Exception {
         double n = 3*numsigma;
-        Sample sample;
         Data data = plot.getData();
         minV = MAXV;
         maxV = MINV;
         minW = MAXW;
         maxW = MINW;
-        for (Iterator i = data.iterator(); i.hasNext(); ) {
-            sample = (Sample)i.next();
+        for (Iterator<Sample> i = data.iterator(); i.hasNext(); ) {
+            Sample sample = i.next();
             if (sample.V()-n*sample.sV() < minV){
                 minV = sample.V()-n*sample.sV();
             }
